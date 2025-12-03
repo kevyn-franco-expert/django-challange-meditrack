@@ -1,0 +1,312 @@
+{
+	"info": {
+		"_postman_id": "meditrack-api-collection",
+		"name": "MediTrack API - Granular Authorization Tests",
+		"description": "Complete API tests with all granular authorization scenarios for hospitals, clinics, and mobile apps",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Legacy Hospital - Doctor",
+			"item": [
+				{
+					"name": "POST /api/patients/ - Create Patient (All Fields Required)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "X-Client-ID", "value": "legacy_hospital_1"},
+							{"key": "X-User-Role", "value": "doctor"},
+							{"key": "Accept", "value": "application/json; version=v1"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"doctor.patient@hospital.com\",\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"date_of_birth\": \"1980-01-01\",\n  \"phone\": \"555-0100\",\n  \"ssn\": \"123-45-6789\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/patients/",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["api", "patients", ""]
+						}
+					}
+				},
+				{
+					"name": "GET /api/patients/1/ - Get Patient (All Fields)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "X-Client-ID", "value": "legacy_hospital_1"},
+							{"key": "X-User-Role", "value": "doctor"},
+							{"key": "Accept", "value": "application/json; version=v1"}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/patients/1/",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["api", "patients", "1", ""]
+						}
+					}
+				},
+				{
+					"name": "PATCH /api/patients/1/ - Update Patient",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{"key": "X-Client-ID", "value": "legacy_hospital_1"},
+							{"key": "X-User-Role", "value": "doctor"},
+							{"key": "Accept", "value": "application/json; version=v1"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"phone\": \"555-0199\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/patients/1/",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["api", "patients", "1", ""]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "2. Legacy Hospital - Nurse",
+			"item": [
+				{
+					"name": "GET /api/patients/1/ - Get Patient (Read Only)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "X-Client-ID", "value": "legacy_hospital_1"},
+							{"key": "X-User-Role", "value": "nurse"},
+							{"key": "Accept", "value": "application/json; version=v1"}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/patients/1/",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["api", "patients", "1", ""]
+						}
+					}
+				},
+				{
+					"name": "PATCH /api/patients/1/ - Try Update (Should Fail)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{"key": "X-Client-ID", "value": "legacy_hospital_1"},
+							{"key": "X-User-Role", "value": "nurse"},
+							{"key": "Accept", "value": "application/json; version=v1"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"phone\": \"555-9999\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/patients/1/",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["api", "patients", "1", ""]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "3. Modern Clinic - Cardiology",
+			"item": [
+				{
+					"name": "POST /api/patients/ - Create Patient (Email Only)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "X-Client-ID", "value": "modern_clinic_1"},
+							{"key": "X-Department", "value": "cardiology"},
+							{"key": "Accept", "value": "application/json; version=v2"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"cardio@clinic.com\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/patients/",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["api", "patients", ""]
+						}
+					}
+				},
+				{
+					"name": "POST /api/patients/ - Create Patient (New SSN Format V2)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "X-Client-ID", "value": "modern_clinic_1"},
+							{"key": "X-Department", "value": "cardiology"},
+							{"key": "Accept", "value": "application/json; version=v2"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"jane@clinic.com\",\n  \"first_name\": \"Jane\",\n  \"last_name\": \"Smith\",\n  \"ssn\": {\n    \"number\": \"111-22-3333\",\n    \"verified\": true,\n    \"verification_date\": \"2024-01-15\"\n  }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/patients/",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["api", "patients", ""]
+						}
+					}
+				},
+				{
+					"name": "GET /api/patients/1/ - Get Patient (V2 SSN Format)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "X-Client-ID", "value": "modern_clinic_1"},
+							{"key": "X-Department", "value": "cardiology"},
+							{"key": "Accept", "value": "application/json; version=v2"}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/patients/1/",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["api", "patients", "1", ""]
+						}
+					}
+				},
+				{
+					"name": "POST /api/records/ - Create Lab Result (Flexible Schema)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "X-Client-ID", "value": "modern_clinic_1"},
+							{"key": "X-Department", "value": "cardiology"},
+							{"key": "Accept", "value": "application/json; version=v2"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"patient\": 1,\n  \"record_type\": \"lab_result\",\n  \"flexible_data\": {\n    \"test_name\": \"Blood Test\",\n    \"results\": {\n      \"hemoglobin\": \"14.5 g/dL\",\n      \"glucose\": \"95 mg/dL\"\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/records/",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["api", "records", ""]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "4. Mobile App - With Consent",
+			"item": [
+				{
+					"name": "POST /api/patients/ - Create Patient (Progressive)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "X-Client-ID", "value": "mobile_app_1"},
+							{"key": "X-Patient-Consent", "value": "true"},
+							{"key": "Accept", "value": "application/json; version=v1"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"mobile@example.com\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/patients/",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["api", "patients", ""]
+						}
+					}
+				},
+				{
+					"name": "GET /api/patients/1/?fields=... - Get Patient (Field Selection)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "X-Client-ID", "value": "mobile_app_1"},
+							{"key": "X-Patient-Consent", "value": "true"},
+							{"key": "Accept", "value": "application/json; version=v1"}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/patients/1/?fields=id,email,first_name,last_name,phone",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["api", "patients", "1", ""],
+							"query": [
+								{"key": "fields", "value": "id,email,first_name,last_name,phone"}
+							]
+						}
+					}
+				},
+				{
+					"name": "PATCH /api/patients/1/ - Update Patient (Progressive)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{"key": "X-Client-ID", "value": "mobile_app_1"},
+							{"key": "X-Patient-Consent", "value": "true"},
+							{"key": "Accept", "value": "application/json; version=v1"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"first_name\": \"John\",\n  \"phone\": \"555-0300\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/patients/1/",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["api", "patients", "1", ""]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "5. Mobile App - No Consent",
+			"item": [
+				{
+					"name": "GET /api/patients/1/ - Try Get Patient (Should Fail - No Consent)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "X-Client-ID", "value": "mobile_app_1"},
+							{"key": "X-Patient-Consent", "value": "false"},
+							{"key": "Accept", "value": "application/json; version=v1"}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/patients/1/",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["api", "patients", "1", ""]
+						}
+					}
+				}
+			]
+		}
+	]
+}
